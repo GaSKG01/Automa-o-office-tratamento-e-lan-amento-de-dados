@@ -1,0 +1,48 @@
+from openpyxl import load_workbook
+from openpyxl import Workbook
+from tkinter import *
+from tkinter import filedialog
+
+
+def carregar_workbook_existente():
+    root = Tk()
+    root.withdraw()
+
+    arquivo_xlsx = filedialog.askopenfilename()
+    if arquivo_xlsx:
+        arquivo_tipo = filedialog.askopenfilename()
+
+        if arquivo_tipo.lower().endswith('.txt'):
+            transferir_arquivos_para_excell(arquivo_xlsx, arquivo_tipo)
+        elif arquivo_tipo.lower().endswith('.csv'):
+            transferir_arquivos_para_excell(arquivo_xlsx, arquivo_tipo)
+
+
+def transferir_arquivos_para_excell(arquivo_xlsx, arquivo):
+
+    if arquivo:
+
+        wb = load_workbook(arquivo_xlsx)
+        ws = wb.active
+        corpo = cell_range = ws['a1:a1']
+        with open(arquivo,'r', encoding = 'utf-8') as base:             
+            linhas = base.readlines()
+            for linha in linhas:
+                itens = linha.strip().split(',')
+                ws.append(itens)
+        wb.save(arquivo_xlsx)
+        print('Os dados foram tranferidos com sucesso')
+        
+
+#Executa o Tkinter
+
+janela = Tk()
+janela.geometry("500x500")
+janela.title("Organizador de dados no excell")
+texto_de_orientacao = Label (janela, text = "Selecione o tipo de organização para seus dados no excell")
+texto_de_orientacao.place(x = 0 , y = 1)
+botao_Carregar_workbook = Button(janela, text = "Carregar Workbook", command = carregar_workbook_existente)
+botao_Carregar_workbook.place( x = 0, y = 60)
+
+
+janela.mainloop()
